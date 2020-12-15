@@ -1,0 +1,40 @@
+{
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "rules": {
+        "semi": "off",
+        "@typescript-eslint/semi": "error",
+        "quotes": "off",
+        "@typescript-eslint/quotes": ["error", "single"],
+        "no-extra-parens": "off",
+        "@typescript-eslint/no-extra-parens": ["error"],
+        "comma-spacing": "off",
+        "@typescript-eslint/comma-spacing": ["error"],
+        "brace-style": "error",
+        "@typescript-eslint/brace-style": ["error"],
+        "func-call-spacing": "off",
+        "@typescript-eslint/func-call-spacing": ["error"],
+        "space-before-function-paren": "off",
+        "@typescript-eslint/space-before-function-paren": ["error", "never"],
+        "@typescript-eslint/type-annotation-spacing": ["error"],
+        "@typescript-eslint/prefer-function-type": ["error"],
+        "@typescript-eslint/array-type": ["error", {"default": "array"}],
+        "object-curly-spacing": ["error", "never"],
+        "space-in-parens": ["error", "never"],
+        "no-trailing-spaces": "error",
+        "no-whitespace-before-property": "error",
+        "no-misleading-character-class": "off",
+        "react/prop-types": "off",
+        "curly": "error",
+        "space-before-blocks": "error",
+        "complexity": "error"
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended"
+    ]
+  }

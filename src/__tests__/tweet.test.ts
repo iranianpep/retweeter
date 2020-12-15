@@ -1,0 +1,317 @@
+import Tweet, {TweetConfig} from '../Tweet';
+import {TweetUserConfig} from '../TweetUser';
+import {getRawTweet} from './__fixtures__/rawTweet';
+import {getRawUser} from './__fixtures__/rawUser';
+import {getUserDefaultConfigs} from './tweetUser.test';
+
+export const getTweetDefaultConfigs = (overrides?: Partial<TweetConfig>, userConfigOverrides?: Partial<TweetUserConfig>): TweetConfig => {
+    const defaultConfigs: TweetConfig = {
+        minFavs: 3,
+        minFavsToFollowers: 0.02,
+        hashtagsLimit: 5,
+        userConfig: getUserDefaultConfigs(userConfigOverrides)
+    };
+
+    return {...defaultConfigs, ...overrides};
+};
+
+describe('Tweet', () => {
+    describe('isRetweet', () => {
+        it('should return true if tweet is retweet', () => {
+            const tweet = new Tweet(getRawTweet({
+                retweeted: true
+            }), getTweetDefaultConfigs());
+
+            expect(tweet.isRetweet()).toBe(true);
+        });
+
+        it('should return false if tweet is not retweet', () => {
+            const tweet = new Tweet(getRawTweet(), getTweetDefaultConfigs());
+
+            expect(tweet.isRetweet()).toBe(false);
+        });
+    });
+
+    describe('isReply', () => {
+        it('should return true if tweet is reply', () => {
+            const tweet = new Tweet(getRawTweet({
+                in_reply_to_status_id_str: '123'
+            }), getTweetDefaultConfigs());
+
+            expect(tweet.isReply()).toBe(true);
+        });
+
+        it('should return false if tweet is not reply', () => {
+            const tweet = new Tweet(getRawTweet(), getTweetDefaultConfigs());
+
+            expect(tweet.isReply()).toBe(false);
+        });
+    });
+
+    describe('isSensitive', () => {
+        it('should return true if tweet is sensitive', () => {
+            const tweet = new Tweet(getRawTweet({
+                possibly_sensitive: true
+            }), getTweetDefaultConfigs());
+
+            expect(tweet.isSensitive()).toBe(true);
+        });
+
+        it('should return false if tweet is not sensitive', () => {
+            const tweet = new Tweet(getRawTweet(), getTweetDefaultConfigs());
+
+            expect(tweet.isSensitive()).toBe(false);
+        });
+    });
+
+    describe('hasMinFavs', () => {
+        it('should return true if tweet has enough favs', () => {
+            const tweet = new Tweet(getRawTweet({
+                favorite_count: 1000
+            }), getTweetDefaultConfigs({
+                minFavs: 5
+            }));
+
+            expect(tweet.hasMinFavs()).toBe(true);
+        });
+
+        it('should return false if tweet does not have enough favs', () => {
+            const tweet = new Tweet(getRawTweet({
+                favorite_count: 4
+            }), getTweetDefaultConfigs({
+                minFavs: 5
+            }));
+
+            expect(tweet.hasMinFavs()).toBe(false);
+        });
+    });
+
+    describe('hasMinFavsToFollowersRatio', () => {
+        it('should return true if user has enough min favs to followers ratio', () => {
+            const tweet = new Tweet(getRawTweet({
+                favorite_count: 50,
+                user: getRawUser({
+                    followers_count: 50
+                })
+            }), getTweetDefaultConfigs({
+                minFavsToFollowers: 0.8
+            }));
+
+            expect(tweet.hasMinFavsToFollowersRatio()).toBe(true);
+        });
+
+        it('should return false if user does not have enough min favs to followers ratio', () => {
+            const tweet = new Tweet(getRawTweet({
+                favorite_count: 50,
+                user: getRawUser({
+                    followers_count: 10000
+                })
+            }), getTweetDefaultConfigs());
+
+            expect(tweet.hasMinFavsToFollowersRatio()).toBe(false);
+        });
+    });
+
+    describe('hasTooManyHashtags', () => {
+        it('should return true if tweet does not have too many hashtags', () => {
+            const tweet = new Tweet(getRawTweet({
+                entities: {
+                    hashtags: [
+                        {
+                            indices: [1, 1],
+                            text: 'blah blah'
+                        }
+                    ],
+                    media: [],
+                    urls: [],
+                    user_mentions: [],
+                    symbols: [],
+                    polls: []
+                }
+            }), getTweetDefaultConfigs({
+                hashtagsLimit: 0
+            }));
+
+            expect(tweet.hasTooManyHashtags()).toBe(true);
+        });
+
+        it('should return true if tweet has too many hashtags', () => {
+            const tweet = new Tweet(getRawTweet(), getTweetDefaultConfigs());
+            expect(tweet.hasTooManyHashtags()).toBe(false);
+        });
+    });
+
+    describe('isWithheld', () => {
+        it('should return true if tweet is withheld', () => {
+            const tweet = new Tweet(getRawTweet({
+                withheld_copyright: true
+            }), getTweetDefaultConfigs());
+
+            expect(tweet.isWithheld()).toBe(true);
+        });
+
+        it('should return false if tweet is not withheld', () => {
+            const tweet = new Tweet(getRawTweet(), getTweetDefaultConfigs());
+
+            expect(tweet.isWithheld()).toBe(false);
+        });
+    });
+
+    describe('isReTweetable', () => {
+        it('should return true if tweet is eligible to be retweeted', () => {
+            const tweet = new Tweet(getRawTweet({
+                favorite_count: 1000,
+                user: getRawUser({
+                    followers_count: 1000,
+                    statuses_count: 1000,
+                })
+            }), getTweetDefaultConfigs({
+                userConfig: {
+                    minCreationDiff: 1,
+                    minFollowers: 5,
+                    minTweets: 5
+                }
+            }));
+
+            expect(tweet.isReTweetable()).toBe(true);
+        });
+
+        it('should return false if tweet is retweet', () => {
+            const tweet = new Tweet(getRawTweet({
+                retweeted: true,
+                favorite_count: 1000,
+                user: getRawUser({
+                    followers_count: 1000,
+                    statuses_count: 1000,
+                })
+            }), getTweetDefaultConfigs());
+
+            expect(tweet.isReTweetable()).toBe(false);
+            expect(tweet.retweetError).toBe('Tweet is retweet');
+        });
+
+        it('should return false if tweet is reply', () => {
+            const tweet = new Tweet(getRawTweet({
+                in_reply_to_user_id_str: '123',
+                favorite_count: 1000,
+                user: getRawUser({
+                    followers_count: 1000,
+                    statuses_count: 1000,
+                })
+            }), getTweetDefaultConfigs());
+
+            expect(tweet.isReTweetable()).toBe(false);
+            expect(tweet.retweetError).toBe('Tweet is reply');
+        });
+
+        it('should return false if tweet is sensitive', () => {
+            const tweet = new Tweet(getRawTweet({
+                possibly_sensitive: true,
+                favorite_count: 1000,
+                user: getRawUser({
+                    followers_count: 1000,
+                    statuses_count: 1000,
+                })
+            }), getTweetDefaultConfigs());
+
+            expect(tweet.isReTweetable()).toBe(false);
+            expect(tweet.retweetError).toBe('Tweet is sensitive');
+        });
+
+        it('should return false if tweet is sensitive', () => {
+            const tweet = new Tweet(getRawTweet({
+                possibly_sensitive: true,
+                favorite_count: 1000,
+                user: getRawUser({
+                    followers_count: 1000,
+                    statuses_count: 1000,
+                })
+            }), getTweetDefaultConfigs());
+
+            expect(tweet.isReTweetable()).toBe(false);
+            expect(tweet.retweetError).toBe('Tweet is sensitive');
+        });
+
+        it('should return false if tweet does not have enough favs', () => {
+            const tweet = new Tweet(getRawTweet({
+                favorite_count: 1,
+                user: getRawUser({
+                    followers_count: 1000,
+                    statuses_count: 1000,
+                })
+            }), getTweetDefaultConfigs());
+
+            expect(tweet.isReTweetable()).toBe(false);
+            expect(tweet.retweetError).toBe('Tweet does not have min favs');
+        });
+
+        it('should return false if tweet does not have enough favs to followers', () => {
+            const tweet = new Tweet(getRawTweet({
+                favorite_count: 10,
+                user: getRawUser({
+                    followers_count: 1000000,
+                    statuses_count: 1000,
+                })
+            }), getTweetDefaultConfigs());
+
+            expect(tweet.isReTweetable()).toBe(false);
+            expect(tweet.retweetError).toBe('Tweet does not have min favs to followers');
+        });
+
+        it('should return false if tweet has too many hashtags', () => {
+            const tweet = new Tweet(getRawTweet({
+                entities: {
+                    hashtags: [
+                        {
+                            indices: [1, 1],
+                            text: 'blah blah'
+                        }
+                    ],
+                    media: [],
+                    urls: [],
+                    user_mentions: [],
+                    symbols: [],
+                    polls: []
+                },
+                favorite_count: 1000,
+                user: getRawUser({
+                    followers_count: 1000,
+                    statuses_count: 1000,
+                })
+            }), getTweetDefaultConfigs({
+                hashtagsLimit: 0
+            }));
+
+            expect(tweet.isReTweetable()).toBe(false);
+            expect(tweet.retweetError).toBe('Tweet has too many hashtags');
+        });
+
+        it('should return false if tweet is withheld', () => {
+            const tweet = new Tweet(getRawTweet({
+                withheld_copyright: true,
+                favorite_count: 1000,
+                user: getRawUser({
+                    followers_count: 1000,
+                    statuses_count: 1000,
+                })
+            }), getTweetDefaultConfigs());
+
+            expect(tweet.isReTweetable()).toBe(false);
+            expect(tweet.retweetError).toBe('Tweet is withheld');
+        });
+
+        it('should return false if user is not eligible', () => {
+            const tweet = new Tweet(getRawTweet({
+                favorite_count: 1000,
+                user: getRawUser({
+                    protected: true,
+                    followers_count: 1000,
+                    statuses_count: 1000,
+                })
+            }), getTweetDefaultConfigs());
+
+            expect(tweet.isReTweetable()).toBe(false);
+            expect(tweet.retweetError).toBe('User is not public');
+        });
+    });
+});
