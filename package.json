@@ -15,9 +15,8 @@
   "scripts": {
     "build": "tsc",
     "lint": "eslint . --ext .ts",
-    "test": "jest",
-    "test:coverage": "jest --coverage",
-    "prepare": "yarn build"
+    "test": "jest --coverage",
+    "prepare": "yarn test && yarn build"
   },
   "dependencies": {
     "debug": "^4.3.1",
