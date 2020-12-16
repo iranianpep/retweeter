@@ -1,5 +1,5 @@
 import Twit from 'twit';
-import Bot from '../Bot';
+import Bot from '../index';
 import {getRawTweet} from './__fixtures__/rawTweet';
 import {getRawUser} from './__fixtures__/rawUser';
 import {getTweetDefaultConfigs} from './tweet.test';
