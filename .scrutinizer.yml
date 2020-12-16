@@ -1,0 +1,24 @@
+build:
+  environment:
+    node: v15.4.0
+  nodes:
+    analysis:
+      project_setup:
+        override: true
+    coverage:
+      tests:
+        before:
+          - 'npm install -g typescript'
+        override:
+           - js-scrutinizer-run
+           - command : 'yarn test:coverage'
+             coverage:
+              file: ./coverage/clover.xml
+              format: clover
+
+checks:
+    javascript: true
+
+filter:
+    excluded_paths:
+        - "src/__tests__/"

@@ -16,7 +16,7 @@
     "build": "tsc",
     "lint": "eslint . --ext .ts",
     "test": "jest",
-    "coverage": "jest --coverage",
+    "test:coverage": "jest --coverage",
     "prepare": "yarn build"
   },
   "dependencies": {
