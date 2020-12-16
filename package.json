@@ -2,7 +2,7 @@
   "name": "retweeter",
   "version": "1.0.3",
   "description": "Simple bot that retweets",
-  "main": "dist/index",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "author": "Ehsan Abbasi",
   "license": "MIT",
