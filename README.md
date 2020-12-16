@@ -6,3 +6,4 @@ Simple retweeter bot
 [![Code Coverage](https://scrutinizer-ci.com/g/iranianpep/retweeter/badges/coverage.png?b=main)](https://scrutinizer-ci.com/g/iranianpep/retweeter/?branch=main)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/iranianpep/retweeter/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/iranianpep/retweeter/?branch=main)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/1d42b9f44b3b4dbdb73571cbee26a6d8)](https://www.codacy.com/gh/iranianpep/retweeter/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=iranianpep/retweeter&amp;utm_campaign=Badge_Grade)
+[![StyleCI](https://styleci.io/repos/321806345/shield?branch=main)](https://styleci.io/repos/321806345)
