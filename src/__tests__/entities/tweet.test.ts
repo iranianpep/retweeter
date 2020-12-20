@@ -1,19 +1,7 @@
-import Tweet, {TweetConfig} from '../Tweet';
-import {TweetUserConfig} from '../TweetUser';
-import {getRawTweet} from './__fixtures__/rawTweet';
-import {getRawUser} from './__fixtures__/rawUser';
-import {getUserDefaultConfigs} from './tweetUser.test';
-
-export const getTweetDefaultConfigs = (overrides?: Partial<TweetConfig>, userConfigOverrides?: Partial<TweetUserConfig>): TweetConfig => {
-    const defaultConfigs: TweetConfig = {
-        minFavs: 3,
-        minFavsToFollowers: 0.02,
-        hashtagsLimit: 5,
-        userConfig: getUserDefaultConfigs(userConfigOverrides)
-    };
-
-    return {...defaultConfigs, ...overrides};
-};
+import Tweet from '../../entities/Tweet';
+import {getTweetDefaultConfigs} from '../__fixtures__/config';
+import {getRawTweet} from '../__fixtures__/rawTweet';
+import {getRawUser} from '../__fixtures__/rawUser';
 
 describe('Tweet', () => {
     describe('isRetweet', () => {

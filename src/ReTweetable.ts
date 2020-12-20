@@ -1,7 +1,7 @@
 export interface ReTweetableInterface {
     retweetError: string;
 
-    isReTweetable: () => boolean;
+    isReTweetable(): boolean;
 }
 
 export abstract class ReTweetableAbstract implements ReTweetableInterface {

@@ -1,18 +1,8 @@
 import moment from 'moment';
-import Constant from '../Constant';
-import TweetUser, {TweetUserConfig} from '../TweetUser';
-import {getRawUser} from './__fixtures__/rawUser';
-
-export const getUserDefaultConfigs = (overrides?: Partial<TweetUserConfig>): TweetUserConfig => {
-    const defaultConfigs: TweetUserConfig = {
-        minCreationDiff: 30,
-        minFollowers: 30,
-        minTweets: 100,
-        userBlocklist: []
-    };
-
-    return {...defaultConfigs, ...overrides};
-};
+import Constant from '../../Constant';
+import TweetUser from '../../entities/TweetUser';
+import {getUserDefaultConfigs} from '../__fixtures__/config';
+import {getRawUser} from '../__fixtures__/rawUser';
 
 describe('TweetUser', () => {
     describe('isPublic', () => {

@@ -1,8 +1,8 @@
 import moment from 'moment';
 import {Twitter} from 'twit';
-import Constant from './Constant';
-import Helper from './Helper';
-import {ReTweetableAbstract} from './ReTweetable';
+import Constant from '../Constant';
+import Helper from '../Helper';
+import {ReTweetableAbstract} from '../ReTweetable';
 
 export type TweetUserConfig = {
     minCreationDiff: number,

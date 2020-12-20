@@ -1,6 +1,6 @@
 import {Twitter} from 'twit';
-import Helper from './Helper';
-import {ReTweetableAbstract} from './ReTweetable';
+import Helper from '../Helper';
+import {ReTweetableAbstract} from '../ReTweetable';
 import TweetUser, {TweetUserConfig} from './TweetUser';
 
 export type TweetConfig = {
