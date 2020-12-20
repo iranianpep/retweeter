@@ -11,7 +11,7 @@ build:
           - 'npm install -g typescript'
         override:
            - js-scrutinizer-run
-           - command : 'yarn test:coverage'
+           - command : 'yarn test'
              coverage:
               file: ./coverage/clover.xml
               format: clover
@@ -21,4 +21,4 @@ checks:
 
 filter:
     excluded_paths:
-        - "src/__tests__/"
+        - "*/__tests__/*"
