@@ -2,7 +2,7 @@ import moment from 'moment';
 import {Twitter} from 'twit';
 import Constant from '../Constant';
 import Helper from '../Helper';
-import {ReTweetableAbstract} from '../ReTweetable';
+import {ReTweetableAbstract, Validation} from '../ReTweetable';
 
 export type TweetUserConfig = {
     minCreationDiff: number,
@@ -44,32 +44,28 @@ export default class TweetUser extends ReTweetableAbstract {
         return Helper.objectExists(this.config.userBlocklist) && this.config.userBlocklist.includes(this.rawUser.id_str);
     }
 
-    isReTweetable(): boolean {
-        if (this.isBlockListed()) {
-            this.retweetError = 'User is in blocklist';
-            return false;
-        }
-
-        if (!this.isPublic()) {
-            this.retweetError = 'User is not public';
-            return false;
-        }
-
-        if (this.isCreatedRecently()) {
-            this.retweetError = 'User is created recently';
-            return false;
-        }
-
-        if (!this.hasEnoughFollowers()) {
-            this.retweetError = 'User does not have enough followers';
-            return false;
-        }
-
-        if (!this.hasEnoughTweets()) {
-            this.retweetError = 'User does not have enough tweets';
-            return false;
-        }
-
-        return true;
+    getRetweetValidations(): Validation[] {
+        return [
+            {
+                validate: () => this.isBlockListed(),
+                message: () => 'User is in blocklist'
+            },
+            {
+                validate: () => !this.isPublic(),
+                message: () => 'User is not public'
+            },
+            {
+                validate: () => this.isCreatedRecently(),
+                message: () => 'User is created recently'
+            },
+            {
+                validate: () => !this.hasEnoughFollowers(),
+                message: () => 'User does not have enough followers'
+            },
+            {
+                validate: () => !this.hasEnoughTweets(),
+                message: () => 'User does not have enough tweets'
+            }
+        ];
     }
 }

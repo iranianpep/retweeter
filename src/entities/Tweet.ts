@@ -1,6 +1,6 @@
 import {Twitter} from 'twit';
 import Helper from '../Helper';
-import {ReTweetableAbstract} from '../ReTweetable';
+import {ReTweetableAbstract, Validation} from '../ReTweetable';
 import TweetUser, {TweetUserConfig} from './TweetUser';
 
 export type TweetConfig = {
@@ -54,47 +54,40 @@ export default class Tweet extends ReTweetableAbstract {
         return Helper.objectExists(this.rawTweet.withheld_copyright) && this.rawTweet.withheld_copyright;
     }
 
-    isReTweetable(): boolean {
-        if (this.isRetweet()) {
-            this.retweetError = 'Tweet is retweet';
-            return false;
-        }
-
-        if (this.isReply()) {
-            this.retweetError = 'Tweet is reply';
-            return false;
-        }
-
-        if (this.isSensitive()) {
-            this.retweetError = 'Tweet is sensitive';
-            return false;
-        }
-
-        if (!this.hasMinFavs()) {
-            this.retweetError = 'Tweet does not have min favs';
-            return false;
-        }
-
-        if (!this.hasMinFavsToFollowersRatio()) {
-            this.retweetError = 'Tweet does not have min favs to followers';
-            return false;
-        }
-
-        if (this.hasTooManyHashtags()) {
-            this.retweetError = 'Tweet has too many hashtags';
-            return false;
-        }
-
-        if (this.isWithheld()) {
-            this.retweetError = 'Tweet is withheld';
-            return false;
-        }
-
-        if (!this.tweetUser.isReTweetable()) {
-            this.retweetError = this.tweetUser.retweetError;
-            return false;
-        }
-
-        return true;
+    getRetweetValidations(): Validation[] {
+        return [
+            {
+                validate: () => this.isRetweet(),
+                message: () => 'Tweet is retweet'
+            },
+            {
+                validate: () => this.isReply(),
+                message: () => 'Tweet is reply'
+            },
+            {
+                validate: () => this.isSensitive(),
+                message: () => 'Tweet is sensitive'
+            },
+            {
+                validate: () => !this.hasMinFavs(),
+                message: () => 'Tweet does not have min favs'
+            },
+            {
+                validate: () => !this.hasMinFavsToFollowersRatio(),
+                message: () => 'Tweet does not have min favs to followers'
+            },
+            {
+                validate: () => this.hasTooManyHashtags(),
+                message: () => 'Tweet has too many hashtags'
+            },
+            {
+                validate: () => this.isWithheld(),
+                message: () => 'Tweet is withheld'
+            },
+            {
+                validate: () => !this.tweetUser.isReTweetable(),
+                message: () => this.tweetUser.retweetError
+            },
+        ];
     }
 }
