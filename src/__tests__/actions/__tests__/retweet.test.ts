@@ -54,7 +54,7 @@ describe('Retweet', () => {
             expect(mockDebug).toBeCalledWith('Retweeting tweet with id: \'123\' ...');
         });
 
-        it('should run onSuccess if retweeting is successful and onSuccess is specifid', async() => {
+        it('should run onSuccess if retweeting is successful and onSuccess is specified', async() => {
             expect.assertions(5);
 
             twit.post = jest.fn()
@@ -80,7 +80,7 @@ describe('Retweet', () => {
             expect(onSuccess).toBeCalledWith(tweet);
         });
 
-        it('should not run onSuccess if retweeting is successful but onSuccess is not specifid', async() => {
+        it('should not run onSuccess if retweeting is successful but onSuccess is not specified', async() => {
             expect.assertions(4);
 
             twit.post = jest.fn()
