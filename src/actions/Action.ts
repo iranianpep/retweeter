@@ -7,7 +7,7 @@ export interface runArgs {
     onSuccess?: onSuccessType
 }
 
-type onSuccessType = (tweet: Tweet) => void;
+type onSuccessType = (tweet: Tweet) => Promise<void>;
 
 export abstract class AbstractAction {
     config: BotConfig;

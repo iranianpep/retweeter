@@ -19,7 +19,7 @@ export default class Retweet extends AbstractAction {
             this.debug('Retweeted!');
 
             if (onSuccess) {
-                onSuccess(tweet);
+                await onSuccess(tweet);
             }
         } else {
             this.debug('Cannot retweet.');

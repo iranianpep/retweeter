@@ -19,7 +19,7 @@ export default class Like extends AbstractAction {
             this.debug('Liked!');
 
             if (onSuccess) {
-                onSuccess(tweet);
+                await onSuccess(tweet);
             }
         } else {
             this.debug('Cannot like.');

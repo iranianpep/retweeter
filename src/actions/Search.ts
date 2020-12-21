@@ -36,7 +36,7 @@ export default class Search extends AbstractAction {
             }
 
             if (args.onSuccess) {
-                args.onSuccess(tweet);
+                await args.onSuccess(tweet);
             }
         }
     }
