@@ -25,7 +25,7 @@ jest.mock('../actions/Search', () => {
 
 describe('Bot', () => {
     const searchParams: Twit.Params = {
-        q: '#مهاجرت',
+        q: '#test',
         count: 10,
         result_type: 'recent',
         lang: 'fa',
@@ -53,14 +53,30 @@ describe('Bot', () => {
     });
 
     describe('retweet', () => {
+        const botConfig = getBotConfig();
+        const twit = new Twit(botConfig.apiConfig);
+        const debug = Debug('dummy');
+
         it('should run the search', async() => {
-            expect.assertions(5);
+            expect.assertions(7);
 
             const bot = new Bot(botConfig);
             await bot.retweet(searchParams);
 
-            expect(Like).toBeCalled();
-            expect(Retweet).toBeCalled();
+            expect(Like).toBeCalledTimes(1);
+            expect(Like).toBeCalledWith(
+                botConfig,
+                twit,
+                debug
+            );
+
+            expect(Retweet).toBeCalledTimes(1);
+            expect(Retweet).toBeCalledWith(
+                botConfig,
+                twit,
+                debug
+            );
+
             expect(mockRun).toBeCalled();
             expect(mockDebug).toBeCalledTimes(1);
             expect(mockDebug).toBeCalledWith('All done.');

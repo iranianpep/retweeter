@@ -10,7 +10,9 @@ jest.mock('twit');
 
 const mockDebug = jest.fn();
 jest.mock('debug', () => {
-    return () => mockDebug;
+    return jest.fn().mockImplementation(() => {
+        return mockDebug;
+    });
 });
 
 describe('Retweet', () => {
