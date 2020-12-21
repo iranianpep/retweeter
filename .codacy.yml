@@ -1,4 +1,4 @@
 ---
-jest.config.js
-package.json
-tsconfig.json
+.*jest.config\.js
+.*package\.json
+.*tsconfig\.json
