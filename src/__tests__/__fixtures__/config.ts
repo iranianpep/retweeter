@@ -19,7 +19,7 @@ export const getTweetDefaultConfigs = (overrides?: Partial<TweetConfig>, userCon
         minFavsToFollowers: 0.02,
         hashtagsLimit: 5,
         userConfig: getUserDefaultConfigs(userConfigOverrides),
-        wordBlockList: []
+        wordBlocklist: []
     };
 
     return {...defaultConfigs, ...overrides};

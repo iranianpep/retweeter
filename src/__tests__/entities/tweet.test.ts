@@ -152,7 +152,7 @@ describe('Tweet', () => {
                     text: 'this tweet has a bad word in it'
                 }),
                 getTweetDefaultConfigs({
-                    wordBlockList: ['bad', 'worst']
+                    wordBlocklist: ['bad', 'worst']
                 })
             );
 
@@ -174,7 +174,7 @@ describe('Tweet', () => {
                     text: ''
                 }),
                 getTweetDefaultConfigs({
-                    wordBlockList: ['bad', 'worst']
+                    wordBlocklist: ['bad', 'worst']
                 })
             );
 
@@ -187,7 +187,7 @@ describe('Tweet', () => {
                     text: 'this is a good tweet'
                 }),
                 getTweetDefaultConfigs({
-                    wordBlockList: ['bad', 'worst']
+                    wordBlocklist: ['bad', 'worst']
                 })
             );
 
@@ -347,7 +347,7 @@ describe('Tweet', () => {
                     statuses_count: 1000,
                 })
             }), getTweetDefaultConfigs({
-                wordBlockList: ['worst']
+                wordBlocklist: ['worst']
             }));
 
             expect(tweet.isReTweetable()).toBe(false);
