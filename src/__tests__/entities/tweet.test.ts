@@ -145,6 +145,56 @@ describe('Tweet', () => {
         });
     });
 
+    describe('hasBlockListedWord', () => {
+        it('should return true if word block list is in tweet', () => {
+            const tweet = new Tweet(
+                getRawTweet({
+                    text: 'this tweet has a bad word in it'
+                }),
+                getTweetDefaultConfigs({
+                    wordBlockList: ['bad', 'worst']
+                })
+            );
+
+            expect(tweet.hasBlockListedWord()).toBe(true);
+        });
+
+        it('should return false if word block list is empty', () => {
+            const tweet = new Tweet(
+                getRawTweet(),
+                getTweetDefaultConfigs()
+            );
+
+            expect(tweet.hasBlockListedWord()).toBe(false);
+        });
+
+        it('should return false if tweet text is empty', () => {
+            const tweet = new Tweet(
+                getRawTweet({
+                    text: ''
+                }),
+                getTweetDefaultConfigs({
+                    wordBlockList: ['bad', 'worst']
+                })
+            );
+
+            expect(tweet.hasBlockListedWord()).toBe(false);
+        });
+
+        it('should return false if word block list is NOT in tweet', () => {
+            const tweet = new Tweet(
+                getRawTweet({
+                    text: 'this is a good tweet'
+                }),
+                getTweetDefaultConfigs({
+                    wordBlockList: ['bad', 'worst']
+                })
+            );
+
+            expect(tweet.hasBlockListedWord()).toBe(false);
+        });
+    });
+
     describe('isReTweetable', () => {
         it('should return true if tweet is eligible to be retweeted', () => {
             const tweet = new Tweet(getRawTweet({
@@ -286,6 +336,22 @@ describe('Tweet', () => {
 
             expect(tweet.isReTweetable()).toBe(false);
             expect(tweet.retweetError).toBe('Tweet is withheld');
+        });
+
+        it('should return false if tweet has a block listed word', () => {
+            const tweet = new Tweet(getRawTweet({
+                text: 'this tweet is the worst.',
+                favorite_count: 1000,
+                user: getRawUser({
+                    followers_count: 1000,
+                    statuses_count: 1000,
+                })
+            }), getTweetDefaultConfigs({
+                wordBlockList: ['worst']
+            }));
+
+            expect(tweet.isReTweetable()).toBe(false);
+            expect(tweet.retweetError).toBe('Tweet has block listed word in it');
         });
 
         it('should return false if user is not eligible', () => {

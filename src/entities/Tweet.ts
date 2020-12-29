@@ -7,7 +7,8 @@ export type TweetConfig = {
     minFavs: number,
     minFavsToFollowers: number,
     hashtagsLimit: number,
-    userConfig: TweetUserConfig
+    userConfig: TweetUserConfig,
+    wordBlockList?: string[]
 };
 
 export default class Tweet extends ReTweetableAbstract {
@@ -54,6 +55,17 @@ export default class Tweet extends ReTweetableAbstract {
         return Helper.objectExists(this.rawTweet.withheld_copyright) && this.rawTweet.withheld_copyright;
     }
 
+    hasBlockListedWord(): boolean {
+        if (!Helper.objectExists(this.config.wordBlockList)
+        || !Helper.objectExists(this.rawTweet.text)) {
+            return false;
+        }
+
+        const tweetText = this.rawTweet.text.toLowerCase();
+
+        return this.config.wordBlockList.some(blockListedWord => tweetText.includes(blockListedWord.toLowerCase()));
+    }
+
     getRetweetValidations(): Validation[] {
         return [
             {
@@ -83,6 +95,10 @@ export default class Tweet extends ReTweetableAbstract {
             {
                 validate: () => this.isWithheld(),
                 message: () => 'Tweet is withheld'
+            },
+            {
+                validate: () => this.hasBlockListedWord(),
+                message: () => 'Tweet has block listed word in it'
             },
             {
                 validate: () => !this.tweetUser.isReTweetable(),
