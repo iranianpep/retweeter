@@ -1,4 +1,7 @@
 ---
-.*jest.config\.js
-.*package\.json
-.*tsconfig\.json
+exclude_paths:
+  - '**/node_modules/**'
+  - '*.md'
+  - '*.json'
+  - '*.yml'
+  - '*.gitignore'
