@@ -1,6 +1,8 @@
 ---
 exclude_paths:
   - '**/node_modules/**'
+  - '**/dist/**'
+  - '**/coverage/**'
   - '*.md'
   - '*.json'
   - '*.yml'

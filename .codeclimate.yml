@@ -1,2 +1,6 @@
 exclude_patterns:
-- "src/__tests__/"
+  - "src/__tests__/"
+checks:
+  method-complexity:
+    config:
+      threshold: 10
