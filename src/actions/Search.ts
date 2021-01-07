@@ -18,7 +18,27 @@ export default class Search extends AbstractAction {
 
         this.debug(`Found '${tweets.length}' tweet(s).`);
 
-        await this.processTweets(args, tweets);
+        const retweetedTweets = await this.searchRetweetedTweets();
+
+        let count = 0;
+        for (const tweet of tweets) {
+            count++;
+
+            if (!tweet.isReTweetable()) {
+                this.debug(`${count}. Tweet with id: '${tweet.rawTweet.id_str}' is not retweetable because: ${tweet.retweetError}.`);
+                continue;
+            }
+
+            this.debug(`${count}. Tweet with id: '${tweet.rawTweet.id_str}' may be retweeted!`);
+
+            if (this.hasAlreadyReTweeted(retweetedTweets, tweet)) {
+                continue;
+            }
+
+            if (args.onSuccess) {
+                await args.onSuccess(tweet);
+            }
+        }
     }
 
     private async search(searchParams: Twit.Params): Promise<Tweet[]> {
@@ -68,30 +88,6 @@ export default class Search extends AbstractAction {
             }
 
             throw new Error('Cannot search recent retweets');
-        }
-    }
-
-    private async processTweets(args: runSearchArgs, tweets: Tweet[]): Promise<void> {
-        const retweetedTweets = await this.searchRetweetedTweets();
-
-        let count = 0;
-        for (const tweet of tweets) {
-            count++;
-
-            if (!tweet.isReTweetable()) {
-                this.debug(`${count}. Tweet with id: '${tweet.rawTweet.id_str}' is not retweetable because: ${tweet.retweetError}.`);
-                continue;
-            }
-
-            this.debug(`${count}. Tweet with id: '${tweet.rawTweet.id_str}' may be retweeted!`);
-
-            if (this.hasAlreadyReTweeted(retweetedTweets, tweet)) {
-                continue;
-            }
-
-            if (args.onSuccess) {
-                await args.onSuccess(tweet);
-            }
         }
     }
 

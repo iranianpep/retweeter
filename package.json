@@ -1,6 +1,6 @@
 {
   "name": "retweeter",
-  "version": "1.0.12",
+  "version": "1.0.11",
   "description": "Simple bot that retweets",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
