@@ -101,13 +101,17 @@ describe('Tweet', () => {
     });
 
     describe('hasTooManyHashtags', () => {
-        it('should return true if tweet does not have too many hashtags', () => {
+        it('should return true if tweet has too many hashtags', () => {
             const tweet = new Tweet(getRawTweet({
                 entities: {
                     hashtags: [
                         {
                             indices: [1, 1],
                             text: 'blah blah'
+                        },
+                        {
+                            indices: [1, 1],
+                            text: 'blah2 blah2'
                         }
                     ],
                     media: [],
@@ -117,13 +121,13 @@ describe('Tweet', () => {
                     polls: []
                 }
             }), getTweetDefaultConfigs({
-                hashtagsLimit: 0
+                hashtagsLimit: 1
             }));
 
             expect(tweet.hasTooManyHashtags()).toBe(true);
         });
 
-        it('should return true if tweet has too many hashtags', () => {
+        it('should return false if tweet does not have too many hashtags', () => {
             const tweet = new Tweet(getRawTweet(), getTweetDefaultConfigs());
             expect(tweet.hasTooManyHashtags()).toBe(false);
         });
@@ -149,10 +153,10 @@ describe('Tweet', () => {
         it('should return true if word block list is in tweet', () => {
             const tweet = new Tweet(
                 getRawTweet({
-                    text: 'this tweet has a bad word in it'
+                    text: 'this tweet has a bad word in it به گا '
                 }),
                 getTweetDefaultConfigs({
-                    wordBlocklist: ['bad', 'worst']
+                    wordBlocklist: [' به گا ']
                 })
             );
 
@@ -366,6 +370,32 @@ describe('Tweet', () => {
 
             expect(tweet.isReTweetable()).toBe(false);
             expect(tweet.retweetError).toBe('User is not public');
+        });
+    });
+
+    describe('getText', () => {
+        it('should return full text if it is truncated', () => {
+            const tweet = new Tweet(
+                getRawTweet({
+                    truncated: true,
+                    full_text: 'this is the full text'
+                }),
+                getTweetDefaultConfigs()
+            );
+
+            expect(tweet.getText()).toBe('this is the full text');
+        });
+
+        it('should return text if it is not truncated', () => {
+            const tweet = new Tweet(
+                getRawTweet({
+                    truncated: false,
+                    text: 'this is the text'
+                }),
+                getTweetDefaultConfigs()
+            );
+
+            expect(tweet.getText()).toBe('this is the text');
         });
     });
 });

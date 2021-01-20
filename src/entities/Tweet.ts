@@ -57,13 +57,23 @@ export default class Tweet extends ReTweetableAbstract {
 
     hasBlockListedWord(): boolean {
         if (!Helper.objectExists(this.config.wordBlocklist)
-        || !Helper.objectExists(this.rawTweet.text)) {
+        || this.getText().length === 0) {
             return false;
         }
 
-        const tweetText = this.rawTweet.text.toLowerCase();
+        const tweetText = this.getText().toLowerCase();
 
         return this.config.wordBlocklist.some(blockListedWord => tweetText.includes(blockListedWord.toLowerCase()));
+    }
+
+    getText(): string {
+        const text = this.rawTweet.truncated ? this.rawTweet.full_text : this.rawTweet.text;
+
+        if (text) {
+            return text;
+        }
+
+        return '';
     }
 
     getRetweetValidations(): Validation[] {
