@@ -153,10 +153,10 @@ describe('Tweet', () => {
         it('should return true if word block list is in tweet', () => {
             const tweet = new Tweet(
                 getRawTweet({
-                    text: 'this tweet has a bad word in it به گا '
+                    text: 'this tweet has a bad word in it تست '
                 }),
                 getTweetDefaultConfigs({
-                    wordBlocklist: [' به گا ']
+                    wordBlocklist: [' تست ']
                 })
             );
 
